@@ -1,0 +1,5 @@
+@tailwind utilities;
+
+.btn {
+  @apply cursor-pointer rounded-full p-1 transition-all duration-300 ease-in-out hover:bg-[var(--bg-secondary)];
+}

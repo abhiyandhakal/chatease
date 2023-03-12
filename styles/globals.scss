@@ -1,0 +1,38 @@
+@use "./reset";
+@use "./variables";
+@use "./components/index";
+@use "./layouts/scrollbar";
+@use "./layouts/navbar";
+@use "./utilities";
+
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@200;400;700;800&display=swap");
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+	font-family: "Inter", sans-serif;
+	font-size: 0.9rem;
+}
+
+body {
+	background-color: var(--bg-primary);
+	color: var(--text-primary);
+}
+
+:focus {
+	outline: 1px dotted currentColor;
+}
+
+button:hover {
+	opacity: 0.7;
+	transition: opacity 0.2s;
+}
+
+*,
+*::before,
+*::after {
+	transition: var(--body-bg-transition);
+	-webkit-transition: var(--body-bg-transition);
+	-moz-transition: var(--body-bg-transition);
+}

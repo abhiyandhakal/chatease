@@ -1,0 +1,15 @@
+.textbox-container {
+  display: grid;
+  font-size: var(--fz-lg);
+  gap: calc(var(--space-3) / 2);
+
+  .textbox {
+    padding: var(--space-3);
+    background-color: var(--bg-primary);
+    border-radius: var(--rounded-lg);
+
+    &::placeholder {
+      color: var(--text-secondary);
+    }
+  }
+}
