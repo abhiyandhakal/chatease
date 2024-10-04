@@ -62,7 +62,9 @@ export default function Home() {
   const [input, setInput] = useState<string>("");
 
   useEffect(() => {
-    const newSocket = new WebSocket("ws://localhost:4000/ws?id=" + id);
+    const newSocket = new WebSocket(
+      process.env.NEXT_PUBLIC_SOCKET_API_URL + "?id=" + id,
+    );
 
     newSocket.onopen = () => {
       console.log("WebSocket connection established");
