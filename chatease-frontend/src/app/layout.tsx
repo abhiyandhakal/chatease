@@ -6,6 +6,7 @@ import Image from "next/image";
 import ThemeSwitch from "@/components/custom/theme-switch";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { Toaster } from "@/components/ui/sonner";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -55,6 +56,7 @@ export default function RootLayout({
               </div>
             </header>
             {children}
+            <Toaster richColors closeButton />
           </div>
         </ThemeProvider>
       </body>

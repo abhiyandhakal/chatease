@@ -14,6 +14,12 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { toast } from "sonner";
+import { signup } from "@/lib/api/auth";
+import { useRouter } from "next/navigation";
+import { AxiosError } from "axios";
+
+// TODO: Add profile picture field
 
 const formSchema = z
   .object({
@@ -78,6 +84,7 @@ const formSchema = z
   });
 
 export default function SignupForm() {
+  const router = useRouter();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -91,9 +98,32 @@ export default function SignupForm() {
     },
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    // Do something with the form values.
-    console.log(values);
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    const middleNameExists =
+      !values.middleName || values.middleName.trim() === "" ? false : true;
+    toast.promise(
+      () =>
+        signup({
+          ...values,
+          fullName: middleNameExists
+            ? `${values.firstName} ${values.middleName} ${values.lastName}`
+            : `${values.firstName} ${values.lastName}`,
+        }),
+      {
+        success: () => {
+          router.push("/");
+          return (
+            <>
+              <p className="font-semibold text-lg">Sign up successful!</p>
+              <p>Please login to continue...</p>
+            </>
+          );
+        },
+        loading: "Signing up...",
+        error: (error) =>
+          error instanceof AxiosError ? error.response?.data.message : error,
+      },
+    );
   }
 
   return (
