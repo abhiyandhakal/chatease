@@ -1,8 +1,5 @@
-import ThemeSwitch from "@/components/custom/theme-switch";
-import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import Image from "next/image";
-import Link from "next/link";
 import LoginForm from "./login-form";
 
 export default function Home() {
