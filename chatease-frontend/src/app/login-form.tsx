@@ -66,7 +66,7 @@ export default function LoginForm() {
               <FormLabel>Username</FormLabel>
               <FormControl>
                 <Input
-                  placeholder="shadcn"
+                  placeholder="johndoe"
                   {...field}
                   className="bg-[#D8D6E7] dark:bg-[#149ABA] dark:placeholder:text-secondary dark:text-black"
                 />
