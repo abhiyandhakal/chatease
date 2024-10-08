@@ -9,8 +9,10 @@
   },
   "dependencies": {
     "@elysiajs/swagger": "^1.1.3",
+    "@types/jsonwebtoken": "^9.0.7",
     "drizzle-orm": "^0.33.0",
-    "elysia": "latest"
+    "elysia": "latest",
+    "jsonwebtoken": "^9.0.2"
   },
   "devDependencies": {
     "bun-types": "latest",

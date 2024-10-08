@@ -1,5 +1,8 @@
-import { db } from "./db";
-import { users } from "./db/schema/user";
+import swagger from "@elysiajs/swagger";
+import { Elysia } from "elysia";
+import authRoute from "./routes/auth";
 
-const result = await db.select().from(users);
-console.log(result);
+new Elysia()
+  .use(swagger())
+  .use(authRoute)
+  .listen(process.env.PORT || 3000);
