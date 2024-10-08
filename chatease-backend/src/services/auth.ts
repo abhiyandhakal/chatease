@@ -12,12 +12,14 @@ class AuthService {
     email,
     username,
     profilePic,
+    fullName,
     password,
   }: {
     email: string;
     username: string;
     profilePic?: string;
     password: string;
+    fullName: string;
   }) {
     try {
       // Encrypt password
@@ -52,6 +54,7 @@ class AuthService {
           id: v4(),
           email,
           username,
+          fullName,
           profilePic,
           password: encryptedPassword,
           createdAt: new Date().toISOString(),
@@ -101,6 +104,7 @@ class AuthService {
         {
           username: user.username,
           email: user.email,
+          fullName: user.fullName,
           profilePic: user.profilePic,
         },
         process.env.JWT_SECRET || "",
