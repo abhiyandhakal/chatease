@@ -12,3 +12,11 @@ export function signup(data: {
     data,
   });
 }
+
+export function login(data: { username: string; password: string }) {
+  return http({
+    url: "auth/login",
+    method: "post",
+    data,
+  });
+}
