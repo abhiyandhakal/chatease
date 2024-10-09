@@ -1,4 +1,3 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import Image from "next/image";
 import LoginForm from "./login-form";
 
@@ -19,14 +18,7 @@ export default function Home() {
             Ease
           </span>
         </div>
-        <Card className="bg-secondary border-none shadow-lg px-8 py-6 max-w-xl rounded-2xl">
-          <CardHeader>
-            <CardTitle className="text-center text-4xl">Log In</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <LoginForm />
-          </CardContent>
-        </Card>
+        <LoginForm />
       </div>
       <Image
         src="/heroimg.webp"

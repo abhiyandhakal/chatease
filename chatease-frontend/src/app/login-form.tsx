@@ -18,6 +18,8 @@ import { toast } from "sonner";
 import { login } from "@/lib/api/auth";
 import { useRouter } from "next/navigation";
 import { AxiosError } from "axios";
+import { useState } from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 const formSchema = z.object({
   username: z
@@ -54,6 +56,9 @@ export default function LoginForm() {
       password: "",
     },
   });
+  const [isLoggedIn, setIsLoggedIn] = useState(
+    Cookies.get("accessToken") ? true : false,
+  );
 
   function onSubmit(values: z.infer<typeof formSchema>) {
     toast.promise(() => login(values), {
@@ -62,6 +67,7 @@ export default function LoginForm() {
         const { token } = res?.data;
         Cookies.set("accessToken", token);
         router.push("/chats");
+        setIsLoggedIn(true);
         return res.data?.message || "Logged in successfully";
       },
       loading: "Logging in...",
@@ -70,46 +76,74 @@ export default function LoginForm() {
     });
   }
 
+  if (!isLoggedIn) {
+    return (
+      <Card className="bg-secondary border-none shadow-lg px-8 py-6 max-w-xl rounded-2xl">
+        <CardHeader>
+          <CardTitle className="text-center text-4xl">Log In</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+              <FormField
+                control={form.control}
+                name="username"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Username</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder="johndoe"
+                        {...field}
+                        className="bg-[#D8D6E7] dark:bg-[#149ABA] dark:placeholder:text-secondary dark:text-black"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="password"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Password</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder="•••••••••••••••"
+                        type="password"
+                        {...field}
+                        className="bg-[#D8D6E7] dark:bg-[#149ABA] dark:placeholder:text-secondary dark:text-black"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <Button type="submit">Submit</Button>
+            </form>
+          </Form>
+        </CardContent>
+      </Card>
+    );
+  }
+
   return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-        <FormField
-          control={form.control}
-          name="username"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Username</FormLabel>
-              <FormControl>
-                <Input
-                  placeholder="johndoe"
-                  {...field}
-                  className="bg-[#D8D6E7] dark:bg-[#149ABA] dark:placeholder:text-secondary dark:text-black"
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="password"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Password</FormLabel>
-              <FormControl>
-                <Input
-                  placeholder="•••••••••••••••"
-                  type="password"
-                  {...field}
-                  className="bg-[#D8D6E7] dark:bg-[#149ABA] dark:placeholder:text-secondary dark:text-black"
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <Button type="submit">Submit</Button>
-      </form>
-    </Form>
+    <Card className="bg-secondary border-none shadow-lg px-8 py-6 max-w-xl rounded-2xl">
+      <CardHeader>
+        <CardTitle className="text-center text-4xl">
+          Already Logged In?
+        </CardTitle>
+      </CardHeader>
+      <CardContent>
+        <p className="text-xl text-center">
+          You are already logged in. Click{" "}
+          <a href="/chats" className="text-link underline">
+            here
+          </a>{" "}
+          to go to the chats page.
+        </p>
+      </CardContent>
+    </Card>
   );
 }
