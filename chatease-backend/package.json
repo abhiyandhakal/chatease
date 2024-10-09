@@ -13,7 +13,8 @@
     "@types/jsonwebtoken": "^9.0.7",
     "drizzle-orm": "^0.33.0",
     "elysia": "latest",
-    "jsonwebtoken": "^9.0.2"
+    "jsonwebtoken": "^9.0.2",
+    "uuid": "^10.0.0"
   },
   "devDependencies": {
     "bun-types": "latest",
