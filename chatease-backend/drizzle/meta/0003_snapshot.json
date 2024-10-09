@@ -1,8 +1,8 @@
 {
 	"version": "6",
 	"dialect": "sqlite",
-	"id": "4b7d4c09-504d-4f61-a6a0-f2d277508e5f",
-	"prevId": "7379a0c1-5e7d-49ca-9ab9-c6f74966c3d6",
+	"id": "422efe41-174f-4977-b2ab-4e209f101246",
+	"prevId": "237b6404-db53-46b4-a1d3-9b3cc42bc63f",
 	"tables": {
 		"groups": {
 			"name": "groups",
@@ -328,6 +328,13 @@
 					"notNull": true,
 					"autoincrement": false
 				},
+				"fullName": {
+					"name": "fullName",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": true,
+					"autoincrement": false
+				},
 				"username": {
 					"name": "username",
 					"type": "text",
@@ -337,13 +344,6 @@
 				},
 				"email": {
 					"name": "email",
-					"type": "text",
-					"primaryKey": false,
-					"notNull": true,
-					"autoincrement": false
-				},
-				"fullName": {
-					"name": "fullName",
 					"type": "text",
 					"primaryKey": false,
 					"notNull": true,

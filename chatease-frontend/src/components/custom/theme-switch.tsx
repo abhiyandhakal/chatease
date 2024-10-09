@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/select";
 import { MoonIcon, SunIcon, LaptopIcon } from "lucide-react";
 
-export default function ThemeSwitcher() {
+export default function ThemeSwitch() {
   const { theme, setTheme } = useTheme();
 
   return (

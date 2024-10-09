@@ -16,7 +16,7 @@ body {
 	:root {
 		--background: 247, 26%, 87%;
 		--foreground: 0, 0%, 13%;
-		--card: 0 0% 100%;
+		--card: 198, 42%, 78%;
 		--card-foreground: 0, 0%, 13%;
 		--popover: 0 0% 100%;
 		--popover-foreground: 0, 0%, 13%;
@@ -39,12 +39,13 @@ body {
 		--chart-4: 43 74% 66%;
 		--chart-5: 27 87% 67%;
 		--radius: 0.5rem;
+		--link: 210, 67%, 40%;
 	}
 
 	.dark {
 		--background: 218, 32%, 20%;
 		--foreground: 0, 0%, 95%;
-		--card: 222.2 84% 4.9%;
+		--card: 200, 50%, 24%;
 		--card-foreground: 210 40% 98%;
 		--popover: 222.2 84% 4.9%;
 		--popover-foreground: 210 40% 98%;
@@ -66,6 +67,7 @@ body {
 		--chart-3: 30 80% 55%;
 		--chart-4: 280 65% 60%;
 		--chart-5: 340 75% 55%;
+		--link: 210, 67%, 70%;
 	}
 }
 

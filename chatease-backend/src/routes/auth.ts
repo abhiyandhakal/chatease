@@ -11,6 +11,7 @@ const authRoute = new Elysia({ prefix: "/auth" })
       body: t.Object({
         email: t.String(),
         username: t.String(),
+        fullName: t.String(),
         profilePic: t.Optional(t.String()),
         password: t.String(),
       }),
