@@ -3,7 +3,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-
+import Cookies from "js-cookie";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -14,6 +14,10 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { toast } from "sonner";
+import { login } from "@/lib/api/auth";
+import { useRouter } from "next/navigation";
+import { AxiosError } from "axios";
 
 const formSchema = z.object({
   username: z
@@ -42,6 +46,7 @@ const formSchema = z.object({
 });
 
 export default function LoginForm() {
+  const router = useRouter();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -51,8 +56,18 @@ export default function LoginForm() {
   });
 
   function onSubmit(values: z.infer<typeof formSchema>) {
-    // Do something with the form values.
-    console.log(values);
+    toast.promise(() => login(values), {
+      success: (res) => {
+        router.push("/chats");
+        const { token } = res?.data;
+        Cookies.set("accessToken", token);
+        router.push("/chats");
+        return res.data?.message || "Logged in successfully";
+      },
+      loading: "Logging in...",
+      error: (error) =>
+        error instanceof AxiosError ? error.response?.data?.message : error,
+    });
   }
 
   return (
