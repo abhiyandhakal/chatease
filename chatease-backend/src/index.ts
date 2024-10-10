@@ -2,9 +2,11 @@ import swagger from "@elysiajs/swagger";
 import { Elysia } from "elysia";
 import { cors } from "@elysiajs/cors";
 import authRoute from "./routes/auth";
+import userRoute from "./routes/user";
 
 new Elysia()
   .use(swagger())
   .use(cors())
   .use(authRoute)
+  .use(userRoute)
   .listen(process.env.PORT || 3000);
