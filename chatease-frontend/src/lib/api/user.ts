@@ -6,3 +6,10 @@ export function getOwnUserDetail() {
     method: "get",
   });
 }
+
+export function userSearchByString(query: string) {
+  return http({
+    url: `user/search/${query}`,
+    method: "get",
+  });
+}
