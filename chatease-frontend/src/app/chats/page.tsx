@@ -1,24 +1,26 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
-import { useRouter } from "next/navigation";
-import Cookies from "js-cookie";
+import {
+  ResizableHandle,
+  ResizablePanel,
+  ResizablePanelGroup,
+} from "@/components/ui/resizable";
+import Sidebar from "./sidebar";
+import twConfig from "tailwindcss/resolveConfig";
+import config from "../../../tailwind.config";
 
-function Page() {
-  const router = useRouter();
+export default function Page() {
+  const twConfigLg = twConfig(config).theme.screens.xl;
+  const twConfigLgInt = parseInt(twConfigLg.replace("px", ""));
+  const isMobile = window.innerWidth < twConfigLgInt;
 
   return (
-    <div>
-      <Button
-        onClick={() => {
-          Cookies.remove("accessToken");
-          router.push("/");
-        }}
-      >
-        Log Out
-      </Button>
-    </div>
+    <ResizablePanelGroup direction="horizontal">
+      <ResizablePanel defaultSize={!isMobile ? 20 : undefined}>
+        <Sidebar />
+      </ResizablePanel>
+      <ResizableHandle withHandle className="w-1" />
+      <ResizablePanel></ResizablePanel>
+    </ResizablePanelGroup>
   );
 }
-
-export default Page;

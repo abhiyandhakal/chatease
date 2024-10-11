@@ -25,7 +25,7 @@ http.interceptors.request.use(
 export const handle401Error = (error: AxiosError) => {
   if (error?.response?.status === 401) {
     Cookies.remove("accessToken");
-    window.location.href = "/login";
+    window.location.href = "/";
   }
   return Promise.reject(error);
 };
