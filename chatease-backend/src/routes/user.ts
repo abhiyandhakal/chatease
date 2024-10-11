@@ -4,7 +4,7 @@ import authHeaderValidator, {
 } from "../utils/auth-header-validator";
 import { db } from "../db";
 import { users } from "../db/schema/user";
-import { eq, like, or, sql } from "drizzle-orm";
+import { and, eq, like, not, or, sql } from "drizzle-orm";
 
 const userRoute = new Elysia({ prefix: "/user" })
   // Get your own profile
@@ -63,13 +63,20 @@ const userRoute = new Elysia({ prefix: "/user" })
         return res.error;
       }
 
+      if (typeof res.user === "string") {
+        return error(401, { success: false, message: "Unauthorized" });
+      }
+
       const usersArr = await db
         .select()
         .from(users)
         .where(
-          or(
-            like(users.username, `%${searchString}%`),
-            like(users.fullName, `%${searchString}%`),
+          and(
+            not(eq(users.username, res.user.username)),
+            or(
+              like(users.username, `%${searchString}%`),
+              like(users.fullName, `%${searchString}%`),
+            ),
           ),
         );
 
