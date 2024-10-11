@@ -13,20 +13,67 @@ import { Icon } from "@iconify/react";
 import ThemeSwitch from "@/components/custom/theme-switch";
 import { useRouter } from "next/navigation";
 import Cookies from "js-cookie";
+import Searchbar from "@/components/custom/searchbar";
+import { ChangeEventHandler, useEffect, useState } from "react";
+import { toast } from "sonner";
+import { userSearchByString } from "@/lib/api/user";
+import User from "./user";
 
 export default function Sidebar() {
   const router = useRouter();
   const user = useAtomValue(userAtom);
+  const [search, setSearch] = useState("");
+  const [userSearchResults, setUserSearchResults] = useState<User[]>([]);
 
   function logout() {
     Cookies.remove("accessToken");
     router.push("/");
   }
 
+  useEffect(() => {
+    const getUserSearchResults = setTimeout(async () => {
+      try {
+        const res = await userSearchByString(search);
+        const data = res.data.users as User[];
+        setUserSearchResults(data);
+      } catch (e) {
+        if (e instanceof Error) {
+          toast.error(e.message);
+        }
+      }
+    }, 2000);
+
+    return () => clearTimeout(getUserSearchResults);
+  }, [search]);
+
+  const onSearch: ChangeEventHandler<HTMLInputElement> = (e) => {
+    e.preventDefault();
+    setSearch(e.target.value);
+    console.log(search);
+  };
+
   return (
     <>
       <section className="flex flex-col justify-between w-full h-full">
-        <div></div>
+        <div className="w-full">
+          <div className="p-4">
+            <Searchbar value={search} onChange={onSearch} />
+          </div>
+          {search.length === 0 ? (
+            <></>
+          ) : (
+            <div className="p-4">
+              {userSearchResults.map((user) => (
+                <div key={user.username}>
+                  <button className="hover:bg-secondary w-full p-2 rounded active:bg-primary-foreground active:text-primary">
+                    <User user={user} />
+                  </button>
+                  <hr />
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
         <div className="flex w-full items-center p-2 gap-4">
           <div className="flex items-center gap-4 hover:bg-secondary rounded-lg p-4 w-full">
             <Image

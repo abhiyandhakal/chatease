@@ -4,7 +4,7 @@ import authHeaderValidator, {
 } from "../utils/auth-header-validator";
 import { db } from "../db";
 import { users } from "../db/schema/user";
-import { eq } from "drizzle-orm";
+import { and, eq, like, not, or, sql } from "drizzle-orm";
 
 const userRoute = new Elysia({ prefix: "/user" })
   // Get your own profile
@@ -43,7 +43,10 @@ const userRoute = new Elysia({ prefix: "/user" })
         fullName: user.fullName,
         profilePic: user.profilePic,
       };
-      return publicUser;
+      return {
+        success: true,
+        user: publicUser,
+      };
     },
     {
       params: t.Object({
@@ -51,6 +54,42 @@ const userRoute = new Elysia({ prefix: "/user" })
       }),
       ...authHeaderValidation,
     },
+  )
+  .get(
+    "/search/:searchString",
+    async ({ headers, params: { searchString } }) => {
+      const res = authHeaderValidator(headers);
+      if (res.type === "error") {
+        return res.error;
+      }
+
+      if (typeof res.user === "string") {
+        return error(401, { success: false, message: "Unauthorized" });
+      }
+
+      const usersArr = await db
+        .select()
+        .from(users)
+        .where(
+          and(
+            not(eq(users.username, res.user.username)),
+            or(
+              like(users.username, `%${searchString}%`),
+              like(users.fullName, `%${searchString}%`),
+            ),
+          ),
+        );
+
+      return {
+        success: true,
+        users: usersArr.map((user) => ({
+          username: user.username,
+          fullName: user.fullName,
+          profilePic: user.profilePic,
+        })),
+      };
+    },
+    authHeaderValidation,
   );
 
 export default userRoute;
