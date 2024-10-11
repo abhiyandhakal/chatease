@@ -1,24 +1,9 @@
-"use client";
+import dynamic from "next/dynamic";
 
-import { Button } from "@/components/ui/button";
-import { useRouter } from "next/navigation";
-import Cookies from "js-cookie";
+const DynamicComponentWithNoSSR = dynamic(() => import("./chats-page"), {
+  ssr: false,
+});
 
-function Page() {
-  const router = useRouter();
-
-  return (
-    <div>
-      <Button
-        onClick={() => {
-          Cookies.remove("accessToken");
-          router.push("/");
-        }}
-      >
-        Log Out
-      </Button>
-    </div>
-  );
+export default function Page() {
+  return <DynamicComponentWithNoSSR />;
 }
-
-export default Page;

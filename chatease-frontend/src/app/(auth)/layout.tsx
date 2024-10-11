@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
-import "./globals.css";
-import { ThemeProvider } from "./theme-provider";
+import "../globals.css";
+import { ThemeProvider } from "@/app/theme-provider";
 import Image from "next/image";
 import ThemeSwitch from "@/components/custom/theme-switch";
 import Link from "next/link";
@@ -9,12 +9,12 @@ import { Button } from "@/components/ui/button";
 import { Toaster } from "@/components/ui/sonner";
 
 const geistSans = localFont({
-  src: "./fonts/GeistVF.woff",
+  src: "../fonts/GeistVF.woff",
   variable: "--font-geist-sans",
   weight: "100 900",
 });
 const geistMono = localFont({
-  src: "./fonts/GeistMonoVF.woff",
+  src: "../fonts/GeistMonoVF.woff",
   variable: "--font-geist-mono",
   weight: "100 900",
 });
