@@ -36,6 +36,13 @@
       "when": 1728356556135,
       "tag": "0004_far_photon",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "6",
+      "when": 1728706192122,
+      "tag": "0005_spotty_christian_walker",
+      "breakpoints": true
     }
   ]
 }
