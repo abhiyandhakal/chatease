@@ -5,13 +5,13 @@ type PublicUser = {
 };
 
 type Chat =
-  | {
+  | ({ id: string } & {
       type: "direct";
-      user: User;
-    }
+      user: PublicUser;
+    })
   | {
       type: "group";
       name: string;
-      owner: User;
-      users: User[];
+      owner: PublicUser;
+      users: PublicUser[];
     };
