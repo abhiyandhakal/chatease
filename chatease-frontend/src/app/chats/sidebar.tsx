@@ -1,7 +1,7 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import { userAtom } from "@/store/profile";
-import { useAtomValue } from "jotai";
+import { useAtomValue, useSetAtom } from "jotai";
 import Image from "next/image";
 import {
   DropdownMenu,
@@ -18,12 +18,43 @@ import { ChangeEventHandler, useEffect, useState } from "react";
 import { toast } from "sonner";
 import { userSearchByString } from "@/lib/api/user";
 import User from "./user";
+import { chatSelected } from "@/store/chat";
+import { createDmChannel } from "@/lib/api/chat";
+
+const ChatList = () => {
+  return <></>;
+};
+
+const UserSearchList = ({
+  users,
+  handleUserClick,
+}: {
+  users: User[];
+  handleUserClick: (username: string) => Promise<void>;
+}) => {
+  return (
+    <div className="p-4">
+      {users.map((user) => (
+        <div key={user.username}>
+          <button
+            className="hover:bg-secondary w-full p-2 rounded active:bg-primary-foreground active:text-primary"
+            onClick={() => handleUserClick(user.username)}
+          >
+            <User user={user} />
+          </button>
+          <hr />
+        </div>
+      ))}
+    </div>
+  );
+};
 
 export default function Sidebar() {
   const router = useRouter();
   const user = useAtomValue(userAtom);
   const [search, setSearch] = useState("");
   const [userSearchResults, setUserSearchResults] = useState<User[]>([]);
+  const setChatSelected = useSetAtom(chatSelected);
 
   function logout() {
     Cookies.remove("accessToken");
@@ -32,6 +63,10 @@ export default function Sidebar() {
 
   useEffect(() => {
     const getUserSearchResults = setTimeout(async () => {
+      if (search.trim().length === 0) {
+        setUserSearchResults([]);
+        return;
+      }
       try {
         const res = await userSearchByString(search);
         const data = res.data.users as User[];
@@ -49,7 +84,17 @@ export default function Sidebar() {
   const onSearch: ChangeEventHandler<HTMLInputElement> = (e) => {
     e.preventDefault();
     setSearch(e.target.value);
-    console.log(search);
+  };
+
+  const handleUserClick = async (username: string) => {
+    // Create a chat channel
+    try {
+      const res = await createDmChannel(username);
+      const data = res.data;
+      setChatSelected(data?.data);
+    } catch {
+      toast.error("Failed to create chat channel");
+    }
   };
 
   return (
@@ -60,18 +105,12 @@ export default function Sidebar() {
             <Searchbar value={search} onChange={onSearch} />
           </div>
           {search.length === 0 ? (
-            <></>
+            <ChatList />
           ) : (
-            <div className="p-4">
-              {userSearchResults.map((user) => (
-                <div key={user.username}>
-                  <button className="hover:bg-secondary w-full p-2 rounded active:bg-primary-foreground active:text-primary">
-                    <User user={user} />
-                  </button>
-                  <hr />
-                </div>
-              ))}
-            </div>
+            <UserSearchList
+              users={userSearchResults}
+              handleUserClick={handleUserClick}
+            />
           )}
         </div>
         <div className="flex w-full items-center p-2 gap-4">
