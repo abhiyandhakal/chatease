@@ -4,14 +4,15 @@ type PublicUser = {
   profilePic: string | null;
 };
 
-type Chat =
-  | ({ id: string } & {
+type Chat = { id: string } & (
+  | {
       type: "direct";
       user: PublicUser;
-    })
+    }
   | {
       type: "group";
       name: string;
       owner: PublicUser;
       users: PublicUser[];
-    };
+    }
+);
