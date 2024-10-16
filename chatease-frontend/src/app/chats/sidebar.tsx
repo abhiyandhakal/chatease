@@ -1,7 +1,7 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import { userAtom } from "@/store/profile";
-import { useAtomValue, useSetAtom } from "jotai";
+import { useAtom, useAtomValue, useSetAtom } from "jotai";
 import Image from "next/image";
 import {
   DropdownMenu,
@@ -18,11 +18,13 @@ import { ChangeEventHandler, useEffect, useState } from "react";
 import { toast } from "sonner";
 import { userSearchByString } from "@/lib/api/user";
 import User from "./user";
-import { chatSelected, chatList } from "@/store/chat";
+import { chatList, chatSelected } from "@/store/chat";
 import { createDmChannel } from "@/lib/api/chat";
 
 const ChatList = () => {
   const chatAtom = useAtomValue(chatList);
+  const [chatSelectedAtom, setChatSelectedAtom] = useAtom(chatSelected);
+
   return (
     <>
       <h1 className="text-2xl font-semibold mx-8 my-4">Chats</h1>
@@ -33,7 +35,8 @@ const ChatList = () => {
             <>
               <button
                 key={chat.id}
-                className="flex items-center gap-4 hover:bg-secondary p-4 w-full"
+                className={`flex items-center gap-4 ${chatSelectedAtom?.id === chat.id ? "bg-secondary hover:opacity-85" : "hover:bg-secondary"} p-4 w-full`}
+                onClick={() => setChatSelectedAtom(chat)}
               >
                 <Image
                   src={chat.user.profilePic || "/default-profile.webp"}
@@ -46,7 +49,7 @@ const ChatList = () => {
                   <span className="font-semibold text-xl">
                     {chat.user.fullName}
                   </span>
-                  <span>{chat.user.username}</span>
+                  <span>@{chat.user.username}</span>
                 </div>
               </button>
               <hr />
