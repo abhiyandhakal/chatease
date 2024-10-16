@@ -30,6 +30,36 @@ const chatRoute = new Elysia({ prefix: "/chat" })
       ...authHeaderValidation,
       body: t.Object({ username: t.String() }),
     },
+  )
+  .get(
+    "/:channelId",
+    ({
+      chatService,
+      headers,
+      params: { channelId },
+      query: { isDirect, limit, offset },
+    }) => {
+      const authRes = authHeaderValidator(headers);
+      if (authRes.type === "error") return authRes.error;
+      if (typeof authRes.user === "string") return error(401);
+      return chatService.getMessages(
+        channelId,
+        isDirect ? "direct" : "group",
+        limit,
+        offset,
+      );
+    },
+    {
+      ...authHeaderValidation,
+      params: t.Object({
+        channelId: t.String(),
+      }),
+      query: t.Object({
+        isDirect: t.Boolean(),
+        limit: t.Number(),
+        offset: t.Number(),
+      }),
+    },
   );
 
 export default chatRoute;
