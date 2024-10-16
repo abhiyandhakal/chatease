@@ -18,11 +18,50 @@ import { ChangeEventHandler, useEffect, useState } from "react";
 import { toast } from "sonner";
 import { userSearchByString } from "@/lib/api/user";
 import User from "./user";
-import { chatSelected } from "@/store/chat";
+import { chatSelected, chatList } from "@/store/chat";
 import { createDmChannel } from "@/lib/api/chat";
 
 const ChatList = () => {
-  return <></>;
+  const chatAtom = useAtomValue(chatList);
+  return (
+    <>
+      <h1 className="text-2xl font-semibold mx-8 my-4">Chats</h1>
+      <hr />
+      {chatAtom.map((chat) => {
+        if (chat.type === "direct") {
+          return (
+            <>
+              <button
+                key={chat.id}
+                className="flex items-center gap-4 hover:bg-secondary p-4 w-full"
+              >
+                <Image
+                  src={chat.user.profilePic || "/default-profile.webp"}
+                  alt={chat.user.username}
+                  height={80}
+                  width={80}
+                  className="rounded-full h-14 w-14 object-cover"
+                />
+                <div className="flex flex-col justify-center items-start">
+                  <span className="font-semibold text-xl">
+                    {chat.user.fullName}
+                  </span>
+                  <span>{chat.user.username}</span>
+                </div>
+              </button>
+              <hr />
+            </>
+          );
+        }
+
+        return (
+          <button key={chat.id}>
+            <p>{chat.name}</p>
+          </button>
+        );
+      })}
+    </>
+  );
 };
 
 const UserSearchList = ({
@@ -55,6 +94,7 @@ export default function Sidebar() {
   const [search, setSearch] = useState("");
   const [userSearchResults, setUserSearchResults] = useState<User[]>([]);
   const setChatSelected = useSetAtom(chatSelected);
+  const refreshChatListAtom = useSetAtom(chatList);
 
   function logout() {
     Cookies.remove("accessToken");
@@ -92,8 +132,11 @@ export default function Sidebar() {
       const res = await createDmChannel(username);
       const data = res.data;
       setChatSelected(data?.data);
+      refreshChatListAtom();
     } catch {
       toast.error("Failed to create chat channel");
+    } finally {
+      setSearch("");
     }
   };
 

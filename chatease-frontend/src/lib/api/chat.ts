@@ -7,3 +7,10 @@ export function createDmChannel(username: string) {
     data: { username },
   });
 }
+
+export function getChatList() {
+  return http({
+    url: `chat/`,
+    method: "get",
+  });
+}

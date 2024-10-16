@@ -4,7 +4,7 @@ type User = {
   profilePic?: string | null;
 };
 
-type Chat =
+type Chat = { id: string } & (
   | {
       type: "direct";
       user: User;
@@ -14,7 +14,8 @@ type Chat =
       name: string;
       owner: User;
       users: User[];
-    };
+    }
+);
 
 type ChatMessage = {
   id: string;

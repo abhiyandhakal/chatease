@@ -93,9 +93,11 @@ class ChatService {
         ),
       );
 
+    const newId = v4();
+
     if (existingChannelArr.length === 0) {
       await db.insert(dmChannel).values({
-        id: v4(),
+        id: newId,
         senderId: ownUserId,
         receiverId: otherUserId,
       });
@@ -105,6 +107,7 @@ class ChatService {
       success: true,
       data: <Chat>{
         type: "direct",
+        id: existingChannelArr.length === 0 ? newId : existingChannelArr[0].id,
         user: {
           fullName: otherUserArr[0].fullName,
           username: otherUserArr[0].username,
