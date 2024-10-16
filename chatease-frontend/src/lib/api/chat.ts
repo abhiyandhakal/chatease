@@ -14,3 +14,16 @@ export function getChatList() {
     method: "get",
   });
 }
+
+export function getChatMessagesByChatId(
+  chatId: string,
+  isDirect: boolean,
+  limit: number = 20,
+  offset: number = 0,
+) {
+  return http({
+    url: `chat/${chatId}?isDirect=true&limit=1&offset=1`,
+
+    method: "get",
+  });
+}

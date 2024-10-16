@@ -1,4 +1,5 @@
 type User = {
+  id: string;
   username: string;
   fullName: string;
   profilePic?: string | null;
@@ -19,9 +20,8 @@ type Chat = { id: string } & (
 
 type ChatMessage = {
   id: string;
-  chat: Chat;
   sender: User;
   content: string;
   createdAt: string;
-  updatedAt: string;
+  updatedAt: string | null;
 };

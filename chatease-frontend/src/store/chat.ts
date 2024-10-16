@@ -9,3 +9,10 @@ export const chatList = atomWithRefresh(async () => {
 });
 
 export const chatSelected = atom<Chat | null>(null);
+
+export const chatMessages = atom<
+  {
+    messages: ChatMessage[];
+    chatId: string;
+  }[]
+>([]);
