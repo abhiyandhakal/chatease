@@ -23,10 +23,7 @@ class ChatService {
       .select()
       .from(dmChannel)
       .where(
-        or(
-          eq(dmChannel.senderId, username),
-          eq(dmChannel.receiverId, username),
-        ),
+        or(eq(dmChannel.senderId, user.id), eq(dmChannel.receiverId, user.id)),
       );
     const chats: Chat[] = await Promise.all(
       dbRes.map(async (chat) => {
