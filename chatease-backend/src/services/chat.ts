@@ -1,4 +1,4 @@
-import { eq, or } from "drizzle-orm";
+import { and, eq, or } from "drizzle-orm";
 import { db } from "../db";
 import { dmChannel } from "../db/schema/relations/dm-channel";
 import { users } from "../db/schema/user";
@@ -76,11 +76,30 @@ class ChatService {
     const ownUserId = ownUserArr[0].id;
     const otherUserId = otherUserArr[0].id;
 
-    await db.insert(dmChannel).values({
-      id: v4(),
-      senderId: ownUserId,
-      receiverId: otherUserId,
-    });
+    // Check if a channel already exists
+    const existingChannelArr = await db
+      .select()
+      .from(dmChannel)
+      .where(
+        or(
+          and(
+            eq(dmChannel.senderId, ownUserId),
+            eq(dmChannel.receiverId, otherUserId),
+          ),
+          and(
+            eq(dmChannel.senderId, otherUserId),
+            eq(dmChannel.receiverId, ownUserId),
+          ),
+        ),
+      );
+
+    if (existingChannelArr.length === 0) {
+      await db.insert(dmChannel).values({
+        id: v4(),
+        senderId: ownUserId,
+        receiverId: otherUserId,
+      });
+    }
 
     return {
       success: true,
