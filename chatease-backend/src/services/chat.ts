@@ -154,11 +154,30 @@ class ChatService {
               .offset(offset);
 
       const dbMessages = dbRes.map((data) => data.messsages);
+      const messagesWithUser: ChatMessage[] = await Promise.all(
+        dbMessages.map(async (message) => {
+          const userArr = await db
+            .select()
+            .from(users)
+            .where(eq(users.id, message.senderId));
+          const user = userArr[0];
+
+          return {
+            ...message,
+            sender: {
+              id: user.id,
+              username: user.username,
+              fullName: user.fullName,
+              profilePic: user.profilePic,
+            },
+          };
+        }),
+      );
       return {
         success: true,
         data: {
           chatId: channelId,
-          messages: dbMessages,
+          messages: messagesWithUser,
         },
       };
     } catch (err) {

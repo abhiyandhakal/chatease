@@ -17,3 +17,11 @@ type Chat = { id: string } & (
       users: PublicUser[];
     }
 );
+
+type ChatMessage = {
+  id: string;
+  sender: User;
+  content: string;
+  createdAt: string;
+  updatedAt: string | null;
+};
