@@ -153,7 +153,7 @@ class ChatService {
               .limit(limit)
               .offset(offset);
 
-      const dbMessages = dbRes.map((data) => data.messsages);
+      const dbMessages = dbRes.reverse().map((data) => data.messsages);
       const messagesWithUser: ChatMessage[] = await Promise.all(
         dbMessages.map(async (message) => {
           const userArr = await db

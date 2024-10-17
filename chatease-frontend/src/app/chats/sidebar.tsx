@@ -18,25 +18,25 @@ import { ChangeEventHandler, useEffect, useState } from "react";
 import { toast } from "sonner";
 import { userSearchByString } from "@/lib/api/user";
 import User from "./user";
-import { chatList, chatSelected } from "@/store/chat";
+import { chatListAtom, chatSelectedAtom } from "@/store/chat";
 import { createDmChannel } from "@/lib/api/chat";
 
 const ChatList = () => {
-  const chatAtom = useAtomValue(chatList);
-  const [chatSelectedAtom, setChatSelectedAtom] = useAtom(chatSelected);
+  const chatList = useAtomValue(chatListAtom);
+  const [chatSelected, setChatSelected] = useAtom(chatSelectedAtom);
 
   return (
     <>
       <h1 className="text-2xl font-semibold mx-8 my-4">Chats</h1>
       <hr />
-      {chatAtom.map((chat) => {
+      {chatList.map((chat) => {
         if (chat.type === "direct") {
           return (
             <>
               <button
                 key={chat.id}
-                className={`flex items-center gap-4 ${chatSelectedAtom?.id === chat.id ? "bg-secondary hover:opacity-85" : "hover:bg-secondary"} p-4 w-full`}
-                onClick={() => setChatSelectedAtom(chat)}
+                className={`flex items-center gap-4 ${chatSelected?.id === chat.id ? "bg-secondary hover:opacity-85" : "hover:bg-secondary"} p-4 w-full`}
+                onClick={() => setChatSelected(chat)}
               >
                 <Image
                   src={chat.user.profilePic || "/default-profile.webp"}
@@ -96,8 +96,8 @@ export default function Sidebar() {
   const user = useAtomValue(userAtom);
   const [search, setSearch] = useState("");
   const [userSearchResults, setUserSearchResults] = useState<User[]>([]);
-  const setChatSelected = useSetAtom(chatSelected);
-  const refreshChatListAtom = useSetAtom(chatList);
+  const setChatSelected = useSetAtom(chatSelectedAtom);
+  const refreshChatListAtom = useSetAtom(chatListAtom);
 
   function logout() {
     Cookies.remove("accessToken");

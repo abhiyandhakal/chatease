@@ -18,11 +18,11 @@ export function getChatList() {
 export function getChatMessagesByChatId(
   chatId: string,
   isDirect: boolean,
-  limit: number = 20,
+  limit: number = 40,
   offset: number = 0,
 ) {
   return http({
-    url: `chat/${chatId}?isDirect=true&limit=1&offset=1`,
+    url: `chat/${chatId}?isDirect=${isDirect}&limit=${limit}&offset=${offset}`,
 
     method: "get",
   });
