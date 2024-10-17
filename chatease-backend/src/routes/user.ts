@@ -4,7 +4,7 @@ import authHeaderValidator, {
 } from "../utils/auth-header-validator";
 import { db } from "../db";
 import { users } from "../db/schema/user";
-import { and, eq, like, not, or, sql } from "drizzle-orm";
+import { and, eq, like, not, or } from "drizzle-orm";
 
 const userRoute = new Elysia({ prefix: "/user" })
   // Get your own profile
@@ -39,6 +39,7 @@ const userRoute = new Elysia({ prefix: "/user" })
 
       const user = userArr[0];
       const publicUser: PublicUser = {
+        id: user.id,
         username: user.username,
         fullName: user.fullName,
         profilePic: user.profilePic,
