@@ -1,32 +1,16 @@
-import { Elysia, t } from "elysia";
-
-let chat: { id: string; message: string; time: number }[] = [];
-const connectedClients: Set<any> = new Set();
+import swagger from "@elysiajs/swagger";
+import { Elysia } from "elysia";
+import { cors } from "@elysiajs/cors";
+import authRoute from "./routes/auth";
+import userRoute from "./routes/user";
+import chatRoute from "./routes/chat";
+import wsRoute from "./routes/ws";
 
 new Elysia()
-  .ws("/ws", {
-    open(ws) {
-      connectedClients.add(ws);
-      ws.send(JSON.stringify(chat));
-    },
-    message(ws, { message }) {
-      const { id } = ws.data.query;
-      const newMessage = { id, message, time: Date.now() };
-      chat = [...chat, newMessage];
-
-      // Broadcast the updated chat to all connected clients
-      for (const client of connectedClients) {
-        client.send(JSON.stringify(chat));
-      }
-    },
-    close(ws) {
-      connectedClients.delete(ws);
-    },
-    query: t.Object({
-      id: t.String(),
-    }),
-    body: t.Object({
-      message: t.String(),
-    }),
-  })
-  .listen(4000);
+  .use(swagger())
+  .use(cors())
+  .use(authRoute)
+  .use(userRoute)
+  .use(chatRoute)
+  .use(wsRoute)
+  .listen(process.env.PORT || 3000);
