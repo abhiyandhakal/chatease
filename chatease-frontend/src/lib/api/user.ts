@@ -7,6 +7,13 @@ export function getOwnUserDetail() {
   });
 }
 
+export function getUserByUsername(username: string) {
+  return http({
+    url: `user/${username}`,
+    method: "get",
+  });
+}
+
 export function userSearchByString(query: string) {
   return http({
     url: `user/search/${query}`,
