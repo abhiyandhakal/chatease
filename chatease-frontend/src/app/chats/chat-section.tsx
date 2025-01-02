@@ -4,6 +4,7 @@ import { chatMessagesAtom, chatSelectedAtom } from "@/store/chat";
 import { userAtom } from "@/store/profile";
 import { AxiosError } from "axios";
 import { useAtom, useAtomValue } from "jotai";
+import { useRouter } from "next/navigation";
 import {
   Dispatch,
   FormEventHandler,
@@ -54,6 +55,7 @@ export default function ChatSection() {
   const [input, setInput] = useState("");
   const socket = useRef<WebSocket | null>(null);
   const chatContainerRef = useRef<HTMLDivElement>(null);
+  const router = useRouter();
 
   useEffect(() => {
     if (!chatSelected) return;
@@ -81,6 +83,13 @@ export default function ChatSection() {
         if (error instanceof AxiosError) toast.error(error.response?.data);
       }
     })();
+
+    // add chatSelected to url params
+    const url = new URL(window.location.href);
+    const params = new URLSearchParams(url.search);
+    params.set("chat", chatSelected.id);
+    url.search = params.toString();
+    router.replace(url.toString());
     // eslint-disable-next-line
   }, [chatSelected]);
 
