@@ -1,7 +1,7 @@
 import { Config } from "drizzle-kit";
 
 const config: Config = {
-  dialect: "sqlite",
+  dialect: "postgresql",
   schema: "./src/db/schema/**/*.ts",
   out: "./drizzle",
 };

@@ -1,8 +1,7 @@
-import { migrate } from "drizzle-orm/bun-sqlite/migrator";
+import { migrate } from "drizzle-orm/postgres-js/migrator";
+import postgres from "postgres";
+import { drizzle } from "drizzle-orm/postgres-js";
 
-import { drizzle } from "drizzle-orm/bun-sqlite";
-import { Database } from "bun:sqlite";
-
-const sqlite = new Database("sqlite.db");
-const db = drizzle(sqlite);
+const client = postgres(process.env.DATABASE_URL || "");
+const db = drizzle(client);
 migrate(db, { migrationsFolder: "./drizzle" });
