@@ -1,8 +1,8 @@
-import { sqliteTable, text } from "drizzle-orm/sqlite-core";
+import { pgTable, text } from "drizzle-orm/pg-core";
 import { groups } from "../group";
 import { users } from "../user";
 
-export const userInGroup = sqliteTable("userInGroup", {
+export const userInGroup = pgTable("userInGroup", {
   id: text("id").primaryKey(),
   groupId: text("groupId")
     .notNull()
