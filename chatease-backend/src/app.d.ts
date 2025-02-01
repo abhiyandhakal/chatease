@@ -3,6 +3,7 @@ type PublicUser = {
   fullName: string;
   username: string;
   profilePic: string | null;
+  is_online: boolean;
 };
 
 type Chat = { id: string } & (

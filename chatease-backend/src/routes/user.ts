@@ -5,6 +5,7 @@ import authHeaderValidator, {
 import { db } from "../db";
 import { users } from "../db/schema/user";
 import { and, eq, like, not, or } from "drizzle-orm";
+import { onlineUsers } from "./ws";
 
 const userRoute = new Elysia({ prefix: "/user" })
   // Get your own profile
@@ -43,6 +44,7 @@ const userRoute = new Elysia({ prefix: "/user" })
         username: user.username,
         fullName: user.fullName,
         profilePic: user.profilePic,
+        is_online: onlineUsers.has(user.id),
       };
       return {
         success: true,

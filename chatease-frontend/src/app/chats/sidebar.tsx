@@ -24,6 +24,7 @@ import { createDmChannel } from "@/lib/api/chat";
 const ChatList = () => {
   const chatList = useAtomValue(chatListAtom);
   const [chatSelected, setChatSelected] = useAtom(chatSelectedAtom);
+  console.log(chatList?.[0]);
 
   return (
     <>
@@ -38,13 +39,19 @@ const ChatList = () => {
                 className={`flex items-center gap-4 ${chatSelected?.id === chat.id ? "bg-secondary hover:opacity-85" : "hover:bg-secondary"} p-4 w-full`}
                 onClick={() => setChatSelected(chat)}
               >
-                <Image
-                  src={chat.user.profilePic || "/default-profile.webp"}
-                  alt={chat.user.username}
-                  height={80}
-                  width={80}
-                  className="rounded-full h-14 w-14 object-cover"
-                />
+                <div className="h-14 w-14 relative">
+                  <Image
+                    src={chat.user.profilePic || "/default-profile.webp"}
+                    alt={chat.user.username}
+                    height={80}
+                    width={80}
+                    className="rounded-full h-full w-full object-cover"
+                  />
+                  {/* active status indicator */}
+                  <span
+                    className={`h-4 w-4 absolute rounded-full bottom-0.5 right-0.5 ${chat.user.is_online ? "bg-online" : "bg-offline border-2 border-gray-500"}`}
+                  ></span>
+                </div>
                 <div className="flex flex-col justify-center items-start">
                   <span className="font-semibold text-xl">
                     {chat.user.fullName}

@@ -9,15 +9,20 @@ import { users } from "../db/schema/user";
 // TODO: Implement group chat
 
 const channelClients = new Map<string, Set<any>>();
+export const onlineUsers = new Map<string, Set<string>>();
 
 const wsRoute = new Elysia({ prefix: "/ws" }).ws("/chat", {
   open(ws) {
-    const { channelId } = ws.data.query;
-    console.log("channelId", channelId);
+    const { channelId, id } = ws.data.query;
     if (!channelClients.has(channelId)) {
       channelClients.set(channelId, new Set());
     }
     channelClients.get(channelId)?.add(ws);
+
+    if (!onlineUsers.has(id)) {
+      onlineUsers.set(id, new Set());
+    }
+    onlineUsers.get(id)?.add(channelId);
   },
   async message(ws, { content, timestamp }) {
     const { id, channelId } = ws.data.query;
@@ -58,7 +63,7 @@ const wsRoute = new Elysia({ prefix: "/ws" }).ws("/chat", {
     }
   },
   close(ws) {
-    const { channelId } = ws.data.query;
+    const { channelId, id } = ws.data.query;
 
     const clientsInChannel = channelClients.get(channelId);
     if (clientsInChannel) {
@@ -66,6 +71,15 @@ const wsRoute = new Elysia({ prefix: "/ws" }).ws("/chat", {
 
       if (clientsInChannel.size === 0) {
         channelClients.delete(channelId);
+      }
+    }
+
+    const userChannels = onlineUsers.get(id);
+    if (userChannels) {
+      userChannels.delete(channelId);
+
+      if (userChannels.size === 0) {
+        onlineUsers.delete(id);
       }
     }
   },
