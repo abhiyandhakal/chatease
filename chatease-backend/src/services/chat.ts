@@ -7,6 +7,7 @@ import { v4 } from "uuid";
 import { directMessage } from "../db/schema/relations/direct-message";
 import { messages } from "../db/schema/message";
 import { groupHasMessage } from "../db/schema/relations/group-has-message";
+import { onlineUsers } from "../routes/ws";
 
 class ChatService {
   constructor() {}
@@ -44,6 +45,7 @@ class ChatService {
             username: otherUser.username,
             fullName: otherUser.fullName,
             profilePic: otherUser.profilePic,
+            is_online: onlineUsers.has(otherUser.id),
           },
         };
       }),
@@ -111,6 +113,7 @@ class ChatService {
             fullName: otherUserArr[0].fullName,
             username: otherUserArr[0].username,
             profilePic: otherUserArr[0].profilePic,
+            is_online: onlineUsers.has(otherUserArr[0].id),
           },
         },
       };
@@ -169,6 +172,7 @@ class ChatService {
               username: user.username,
               fullName: user.fullName,
               profilePic: user.profilePic,
+              is_online: onlineUsers.has(user.id),
             },
           };
         }),

@@ -53,6 +53,8 @@ const config: Config = {
         link: {
           DEFAULT: "hsl(var(--link))",
         },
+        online: "hsl(var(--online))",
+        offline: "hsl(var(--offline))",
       },
       borderRadius: {
         lg: "var(--radius)",
