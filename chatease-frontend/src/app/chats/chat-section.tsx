@@ -175,6 +175,7 @@ export default function ChatSection() {
               <Message
                 key={message.id}
                 type={message.sender.id === user?.id ? "self" : "other"}
+                createdAt={message.createdAt}
               >
                 {message.content}
               </Message>
