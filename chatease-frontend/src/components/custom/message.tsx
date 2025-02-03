@@ -6,7 +6,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Button } from "../ui/button";
 import { toast } from "sonner";
-import { editMessageById } from "@/lib/api/chat";
+import { deleteMessageById, editMessageById } from "@/lib/api/chat";
 import { useState } from "react";
 import { useAtom } from "jotai";
 import { chatMessagesAtom } from "@/store/chat";
@@ -65,6 +65,53 @@ const MessageBox: React.FC<MessageBoxProps> = ({ message, type }) => {
     }
   }
 
+  async function deleteMessage() {
+    try {
+      const res = await deleteMessageById(message.id, true);
+      const data = res.data;
+
+      if (!data) {
+        throw new Error("Failed to delete message");
+      }
+
+      let chatId = "";
+      for (const chat of chatMessages) {
+        const chatLookingFor = chat.messages.find(
+          (msg) => msg.id === message.id,
+        );
+
+        if (chatLookingFor) {
+          chatId = chat.chatId;
+          break;
+        }
+      }
+      const newChatMessages = chatMessages.map((chat) => {
+        if (chat.chatId === chatId) {
+          return {
+            ...chat,
+            messages: chat.messages.filter((msg) => {
+              if (msg.id !== message.id) {
+                console.log(msg, message);
+              }
+              return msg.id !== message.id;
+            }),
+          };
+        }
+
+        return chat;
+      });
+      console.log(newChatMessages);
+      setChatMessages(newChatMessages);
+      console.log(chatMessages);
+
+      toast.success("Message deleted successfully");
+
+      // eslint-disable-next-line
+    } catch (error) {
+      toast.error("Failed to delete message");
+    }
+  }
+
   return (
     <div
       className={`w-full flex mt-1 items-center gap-2 ${type === "self" ? "justify-end" : ""}`}
@@ -92,7 +139,7 @@ const MessageBox: React.FC<MessageBoxProps> = ({ message, type }) => {
           <DropdownMenuItem onClick={() => setEditing(true)}>
             Edit
           </DropdownMenuItem>
-          <DropdownMenuItem>Delete</DropdownMenuItem>
+          <DropdownMenuItem onClick={deleteMessage}>Delete</DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
       {editing ? (

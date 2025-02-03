@@ -35,3 +35,10 @@ export function editMessageById(messageId: string, message: string) {
     data: { message },
   });
 }
+
+export function deleteMessageById(messageId: string, isDirect: boolean) {
+  return http({
+    url: `message/${messageId}?isDirect=${isDirect}`,
+    method: "delete",
+  });
+}
