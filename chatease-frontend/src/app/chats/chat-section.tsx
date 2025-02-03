@@ -1,4 +1,4 @@
-import Message from "@/components/custom/message";
+import MessageBox from "@/components/custom/message";
 import { getChatMessagesByChatId } from "@/lib/api/chat";
 import { chatMessagesAtom, chatSelectedAtom } from "@/store/chat";
 import { userAtom } from "@/store/profile";
@@ -172,13 +172,11 @@ export default function ChatSection() {
         >
           {selectedChatMessages?.messages.reverse().map((message) => {
             return (
-              <Message
+              <MessageBox
                 key={message.id}
                 type={message.sender.id === user?.id ? "self" : "other"}
-                createdAt={message.createdAt}
-              >
-                {message.content}
-              </Message>
+                message={{ ...message }}
+              />
             );
           })}
         </div>
