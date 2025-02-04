@@ -24,7 +24,6 @@ import { createDmChannel } from "@/lib/api/chat";
 const ChatList = () => {
   const chatList = useAtomValue(chatListAtom);
   const [chatSelected, setChatSelected] = useAtom(chatSelectedAtom);
-  console.log(chatList?.[0]);
 
   return (
     <>

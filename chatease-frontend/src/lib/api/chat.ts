@@ -27,3 +27,18 @@ export function getChatMessagesByChatId(
     method: "get",
   });
 }
+
+export function editMessageById(messageId: string, message: string) {
+  return http({
+    url: `message/${messageId}`,
+    method: "put",
+    data: { message },
+  });
+}
+
+export function deleteMessageById(messageId: string, isDirect: boolean) {
+  return http({
+    url: `message/${messageId}?isDirect=${isDirect}`,
+    method: "delete",
+  });
+}
