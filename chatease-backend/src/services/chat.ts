@@ -144,7 +144,7 @@ class ChatService {
               .where(eq(directMessage.channelId, channelId))
               .orderBy(desc(messages.createdAt))
               .limit(limit)
-              .offset(offset)
+              .offset(offset * limit)
           : await db
               .select()
               .from(messages)
@@ -154,7 +154,7 @@ class ChatService {
               )
               .where(eq(groupHasMessage.groupId, channelId))
               .limit(limit)
-              .offset(offset);
+              .offset(offset * limit);
 
       const dbMessages = dbRes.reverse().map((data) => data.messsages);
       const messagesWithUser: ChatMessage[] = await Promise.all(

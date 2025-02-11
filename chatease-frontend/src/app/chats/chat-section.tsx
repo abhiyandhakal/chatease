@@ -1,6 +1,10 @@
 import MessageBox from "@/components/custom/message";
 import { getChatMessagesByChatId } from "@/lib/api/chat";
-import { chatMessagesAtom, chatSelectedAtom } from "@/store/chat";
+import {
+  chatMessagesAtom,
+  chatSelectedAtom,
+  isChatScrollingAtom,
+} from "@/store/chat";
 import { userAtom } from "@/store/profile";
 import { AxiosError } from "axios";
 import { useAtom, useAtomValue } from "jotai";
@@ -56,6 +60,8 @@ export default function ChatSection() {
   const socket = useRef<WebSocket | null>(null);
   const chatContainerRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
+  const [currentOffset, setCurrentOffset] = useState(0);
+  const [isScrolling, setIsScrolling] = useAtom(isChatScrollingAtom);
 
   useEffect(() => {
     if (!chatSelected) return;
@@ -132,11 +138,51 @@ export default function ChatSection() {
 
   // scroll to bottom of chat container
   useEffect(() => {
-    if (chatContainerRef.current) {
+    if (chatContainerRef.current && selectedChatMessages && !isScrolling) {
       chatContainerRef.current.scrollTop =
         chatContainerRef.current.scrollHeight;
     }
-  }, [selectedChatMessages]);
+  }, [selectedChatMessages, isScrolling]);
+
+  // fetch messages when top of chat container is reached
+  useEffect(() => {
+    async function handleScroll() {
+      if (chatContainerRef.current?.scrollTop !== 0) return;
+      setIsScrolling(true);
+      if (!chatSelected) return;
+      try {
+        const res = await getChatMessagesByChatId(
+          chatSelected.id,
+          chatSelected.type === "direct",
+          currentOffset + 1,
+        );
+        const data: { chatId: string; messages: ChatMessage[] } = res.data.data;
+        const chatExists = chatMessages.some(
+          (chatMessage) => chatMessage.chatId === data.chatId,
+        );
+        if (!chatExists) return;
+        if (data.messages.length === 0) return;
+        setChatMessages(
+          chatMessages.map((chatMessage) =>
+            chatMessage.chatId === data.chatId
+              ? {
+                  ...chatMessage,
+                  messages: [...data.messages, ...chatMessage.messages],
+                }
+              : chatMessage,
+          ),
+        );
+        setCurrentOffset((prev) => prev + 1);
+      } catch (error) {
+        if (error instanceof AxiosError) toast.error(error.response?.data);
+      }
+    }
+
+    const chatContainer = chatContainerRef.current;
+    chatContainer?.addEventListener("scroll", handleScroll);
+
+    return () => chatContainer?.removeEventListener("scroll", handleScroll);
+  });
 
   const handleTextSubmit: FormEventHandler<HTMLFormElement> = (e) => {
     e.preventDefault();
@@ -152,6 +198,7 @@ export default function ChatSection() {
         }),
       );
       setInput("");
+      setIsScrolling(false);
     }
   };
 

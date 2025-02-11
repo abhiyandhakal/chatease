@@ -18,12 +18,17 @@ import { ChangeEventHandler, useEffect, useState } from "react";
 import { toast } from "sonner";
 import { userSearchByString } from "@/lib/api/user";
 import User from "./user";
-import { chatListAtom, chatSelectedAtom } from "@/store/chat";
+import {
+  chatListAtom,
+  chatSelectedAtom,
+  isChatScrollingAtom,
+} from "@/store/chat";
 import { createDmChannel } from "@/lib/api/chat";
 
 const ChatList = () => {
   const chatList = useAtomValue(chatListAtom);
   const [chatSelected, setChatSelected] = useAtom(chatSelectedAtom);
+  const setIsScrolling = useSetAtom(isChatScrollingAtom);
 
   return (
     <>
@@ -36,7 +41,10 @@ const ChatList = () => {
               <button
                 key={chat.id}
                 className={`flex items-center gap-4 ${chatSelected?.id === chat.id ? "bg-secondary hover:opacity-85" : "hover:bg-secondary"} p-4 w-full`}
-                onClick={() => setChatSelected(chat)}
+                onClick={() => {
+                  setChatSelected(chat);
+                  setIsScrolling(true);
+                }}
               >
                 <div className="h-14 w-14 relative">
                   <Image
@@ -104,6 +112,7 @@ export default function Sidebar() {
   const [userSearchResults, setUserSearchResults] = useState<User[]>([]);
   const setChatSelected = useSetAtom(chatSelectedAtom);
   const refreshChatListAtom = useSetAtom(chatListAtom);
+  const setIsScrolling = useSetAtom(isChatScrollingAtom);
 
   function logout() {
     Cookies.remove("accessToken");
@@ -161,7 +170,10 @@ export default function Sidebar() {
           ) : (
             <UserSearchList
               users={userSearchResults}
-              handleUserClick={handleUserClick}
+              handleUserClick={async (e) => {
+                await handleUserClick(e);
+                setIsScrolling(false);
+              }}
             />
           )}
         </div>

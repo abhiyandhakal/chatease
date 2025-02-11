@@ -100,9 +100,7 @@ const MessageBox: React.FC<MessageBoxProps> = ({ message, type }) => {
 
         return chat;
       });
-      console.log(newChatMessages);
       setChatMessages(newChatMessages);
-      console.log(chatMessages);
 
       toast.success("Message deleted successfully");
 
