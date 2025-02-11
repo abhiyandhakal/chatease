@@ -18,8 +18,8 @@ export function getChatList() {
 export function getChatMessagesByChatId(
   chatId: string,
   isDirect: boolean,
-  limit: number = 40,
   offset: number = 0,
+  limit: number = 100,
 ) {
   return http({
     url: `chat/${chatId}?isDirect=${isDirect}&limit=${limit}&offset=${offset}`,
