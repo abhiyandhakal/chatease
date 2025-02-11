@@ -1,6 +1,10 @@
 import MessageBox from "@/components/custom/message";
 import { getChatMessagesByChatId } from "@/lib/api/chat";
-import { chatMessagesAtom, chatSelectedAtom } from "@/store/chat";
+import {
+  chatMessagesAtom,
+  chatSelectedAtom,
+  isChatScrollingAtom,
+} from "@/store/chat";
 import { userAtom } from "@/store/profile";
 import { AxiosError } from "axios";
 import { useAtom, useAtomValue } from "jotai";
@@ -57,7 +61,7 @@ export default function ChatSection() {
   const chatContainerRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
   const [currentOffset, setCurrentOffset] = useState(0);
-  const [isScrolling, setIsScrolling] = useState(false);
+  const [isScrolling, setIsScrolling] = useAtom(isChatScrollingAtom);
 
   useEffect(() => {
     if (!chatSelected) return;
@@ -147,7 +151,6 @@ export default function ChatSection() {
       setIsScrolling(true);
       if (!chatSelected) return;
       try {
-        console.log("fetching messages, offset:", currentOffset + 1);
         const res = await getChatMessagesByChatId(
           chatSelected.id,
           chatSelected.type === "direct",
@@ -158,6 +161,7 @@ export default function ChatSection() {
           (chatMessage) => chatMessage.chatId === data.chatId,
         );
         if (!chatExists) return;
+        if (data.messages.length === 0) return;
         setChatMessages(
           chatMessages.map((chatMessage) =>
             chatMessage.chatId === data.chatId

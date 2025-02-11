@@ -31,3 +31,5 @@ if (chatId || chatId === "" || chatId === "null" || chatId === "undefined") {
     if (chat) store.set(chatSelectedAtom, chat);
   })();
 }
+
+export const isChatScrollingAtom = atom(false);
