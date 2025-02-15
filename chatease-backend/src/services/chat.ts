@@ -8,21 +8,13 @@ import { directMessage } from "../db/schema/relations/direct-message";
 import { messages } from "../db/schema/message";
 import { groupHasMessage } from "../db/schema/relations/group-has-message";
 import { onlineUsers } from "../routes/ws";
+import GroupService from "./group";
+import { userInGroup } from "../db/schema/relations/user-in-group";
 
 class ChatService {
   constructor() {}
 
-  async getAllChats(username: string) {
-    // TODO: Get group chats as well
-    const userArr = await db
-      .select()
-      .from(users)
-      .where(eq(users.username, username));
-    if (userArr.length === 0) {
-      return error(401);
-    }
-    const user = userArr[0];
-
+  async getDirectChats(user: typeof users.$inferInsert) {
     const dbRes = await db
       .select()
       .from(dmChannel)
@@ -54,6 +46,63 @@ class ChatService {
     return {
       success: true,
       data: chats,
+    };
+  }
+
+  async getAllChats(username: string) {
+    // TODO: Pagination
+    const userArr = await db
+      .select()
+      .from(users)
+      .where(eq(users.username, username));
+    if (userArr.length === 0) {
+      return error(401);
+    }
+    const user = userArr[0];
+
+    const directChatsRes = await this.getDirectChats(user);
+    const hasSuccess = "success" in directChatsRes;
+    if (!hasSuccess || !directChatsRes.success) {
+      return directChatsRes;
+    }
+    const directChats = directChatsRes.data;
+
+    const groupService = new GroupService();
+    const groupChatsRes = await groupService.getAllGroups(user.id, 0, 100);
+    const groupChats = await Promise.all(
+      groupChatsRes.groups.map(async (group) => {
+        const groupUsersArr = await db
+          .select()
+          .from(users)
+          .innerJoin(userInGroup, eq(users.id, userInGroup.userId))
+          .where(eq(userInGroup.groupId, group.id));
+        const groupUsers = groupUsersArr.map((item) => ({
+          id: item.users.id,
+          username: item.users.username,
+          fullName: item.users.fullName,
+          profilePic: item.users.profilePic,
+          is_online: onlineUsers.has(item.users.id),
+        }));
+
+        return {
+          type: "group",
+          id: group.id,
+          name: group.name,
+          owner: {
+            id: group.createdBy,
+            username: group.createdBy,
+            fullName: group.createdBy,
+            profilePic: null,
+            is_online: false,
+          },
+          users: groupUsers,
+        };
+      }),
+    );
+
+    return {
+      success: true,
+      data: [...directChats, ...groupChats],
     };
   }
 
