@@ -5,8 +5,7 @@ import { messages } from "../db/schema/message";
 import { directMessage } from "../db/schema/relations/direct-message";
 import { eq } from "drizzle-orm";
 import { users } from "../db/schema/user";
-
-// TODO: Implement group chat
+import { groupHasMessage } from "../db/schema/relations/group-has-message";
 
 const channelClients = new Map<string, Set<any>>();
 export const onlineUsers = new Map<string, Set<string>>();
@@ -25,7 +24,7 @@ const wsRoute = new Elysia({ prefix: "/ws" }).ws("/chat", {
     onlineUsers.get(id)?.add(channelId);
   },
   async message(ws, { content, timestamp }) {
-    const { id, channelId } = ws.data.query;
+    const { id, channelId, type } = ws.data.query;
     const newMessage = {
       id: v4(),
       content,
@@ -35,11 +34,19 @@ const wsRoute = new Elysia({ prefix: "/ws" }).ws("/chat", {
     };
 
     await db.insert(messages).values(newMessage);
-    await db.insert(directMessage).values({
-      id: v4(),
-      channelId: channelId,
-      messageId: newMessage.id,
-    });
+
+    if (type === "direct")
+      await db.insert(directMessage).values({
+        id: v4(),
+        channelId: channelId,
+        messageId: newMessage.id,
+      });
+    else
+      await db.insert(groupHasMessage).values({
+        id: v4(),
+        groupId: channelId,
+        messageId: newMessage.id,
+      });
 
     const senderArr = await db.select().from(users).where(eq(users.id, id));
     if (senderArr.length === 0) return "Sender not found";
@@ -86,6 +93,7 @@ const wsRoute = new Elysia({ prefix: "/ws" }).ws("/chat", {
   query: t.Object({
     id: t.String(),
     channelId: t.String(),
+    type: t.String(),
   }),
   body: t.Object({
     content: t.String(),
