@@ -24,6 +24,7 @@ import {
   isChatScrollingAtom,
 } from "@/store/chat";
 import { createDmChannel } from "@/lib/api/chat";
+import AddGroup from "./add-group";
 
 const ChatList = () => {
   const chatList = useAtomValue(chatListAtom);
@@ -158,8 +159,9 @@ export default function Sidebar() {
     <>
       <section className="flex flex-col justify-between w-full h-full">
         <div className="w-full">
-          <div className="p-4">
+          <div className="p-4 flex gap-2">
             <Searchbar value={search} onChange={onSearch} />
+            <AddGroup />
           </div>
           {search.length === 0 ? (
             <ChatList />

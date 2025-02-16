@@ -42,3 +42,11 @@ export function deleteMessageById(messageId: string) {
     method: "delete",
   });
 }
+
+export function createGroup(name: string, description: string) {
+  return http({
+    url: `group/create`,
+    method: "post",
+    data: { name, description },
+  });
+}

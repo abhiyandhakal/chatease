@@ -3,6 +3,7 @@ import { db } from "../db";
 import { groups } from "../db/schema/group";
 import { userInGroup } from "../db/schema/relations/user-in-group";
 import { v4 } from "uuid";
+import { error } from "elysia";
 
 class GroupService {
   async getAllGroups(id: string, offset: number, limit: number) {
@@ -45,10 +46,10 @@ class GroupService {
   }) {
     const groupExists = await this.groupExists(name.trim(), userId);
     if (groupExists) {
-      return {
+      return error(400, {
         success: false,
         message: "Group already exists",
-      };
+      });
     }
 
     const newGroup = await db
