@@ -47,12 +47,7 @@ const messageRoute = new Elysia({ prefix: "/message" })
   )
   .delete(
     "/:messageId",
-    async ({
-      params: { messageId },
-      headers,
-      messageService,
-      query: { isDirect },
-    }) => {
+    async ({ params: { messageId }, headers, messageService }) => {
       const res = authHeaderValidator(headers);
       if (res.type === "error") {
         return res.error;
@@ -65,9 +60,9 @@ const messageRoute = new Elysia({ prefix: "/message" })
       if (usersArr.length === 0) {
         return error(404, { success: false, message: "User not found" });
       }
-      return messageService.deleteMessage(usersArr[0].id, messageId, isDirect);
+      return messageService.deleteMessage(usersArr[0].id, messageId);
     },
-    { ...authHeaderValidation, query: t.Object({ isDirect: t.Boolean() }) },
+    { ...authHeaderValidation },
   );
 
 export default messageRoute;
