@@ -108,7 +108,7 @@ export default function ChatSection() {
     }
 
     const newSocket = new WebSocket(
-      `${process.env.NEXT_PUBLIC_SOCKET_API_URL}/chat?id=${user.id}&channelId=${chatSelected?.id}`,
+      `${process.env.NEXT_PUBLIC_SOCKET_API_URL}/chat?id=${user.id}&channelId=${chatSelected?.id}&type=${chatSelected?.type}`,
     );
 
     newSocket.onopen = () => console.log("WebSocket connection established");

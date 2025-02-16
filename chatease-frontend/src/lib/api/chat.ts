@@ -36,9 +36,9 @@ export function editMessageById(messageId: string, message: string) {
   });
 }
 
-export function deleteMessageById(messageId: string, isDirect: boolean) {
+export function deleteMessageById(messageId: string) {
   return http({
-    url: `message/${messageId}?isDirect=${isDirect}`,
+    url: `message/${messageId}`,
     method: "delete",
   });
 }

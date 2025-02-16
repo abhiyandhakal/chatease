@@ -35,17 +35,17 @@ const ChatList = () => {
       <h1 className="text-2xl font-semibold mx-8 my-4">Chats</h1>
       <hr />
       {chatList.map((chat) => {
-        if (chat.type === "direct") {
-          return (
-            <>
-              <button
-                key={chat.id}
-                className={`flex items-center gap-4 ${chatSelected?.id === chat.id ? "bg-secondary hover:opacity-85" : "hover:bg-secondary"} p-4 w-full`}
-                onClick={() => {
-                  setChatSelected(chat);
-                  setIsScrolling(true);
-                }}
-              >
+        return (
+          <>
+            <button
+              key={chat.id}
+              className={`flex items-center gap-4 ${chatSelected?.id === chat.id ? "bg-secondary hover:opacity-85" : "hover:bg-secondary"} p-4 w-full`}
+              onClick={() => {
+                setChatSelected(chat);
+                setIsScrolling(true);
+              }}
+            >
+              {chat.type === "direct" ? (
                 <div className="h-14 w-14 relative">
                   <Image
                     src={chat.user.profilePic || "/default-profile.webp"}
@@ -59,22 +59,18 @@ const ChatList = () => {
                     className={`h-4 w-4 absolute rounded-full bottom-0.5 right-0.5 ${chat.user.is_online ? "bg-online" : "bg-offline border-2 border-gray-500"}`}
                   ></span>
                 </div>
-                <div className="flex flex-col justify-center items-start">
-                  <span className="font-semibold text-xl">
-                    {chat.user.fullName}
-                  </span>
+              ) : null}
+              <div className="flex flex-col justify-center items-start">
+                <span className="font-semibold text-xl">
+                  {chat.type === "direct" ? chat.user.fullName : chat.name}
+                </span>
+                {chat.type === "direct" ? (
                   <span>@{chat.user.username}</span>
-                </div>
-              </button>
-              <hr />
-            </>
-          );
-        }
-
-        return (
-          <button key={chat.id}>
-            <p>{chat.name}</p>
-          </button>
+                ) : null}
+              </div>
+            </button>
+            <hr />
+          </>
         );
       })}
     </>

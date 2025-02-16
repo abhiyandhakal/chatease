@@ -67,7 +67,7 @@ const MessageBox: React.FC<MessageBoxProps> = ({ message, type }) => {
 
   async function deleteMessage() {
     try {
-      const res = await deleteMessageById(message.id, true);
+      const res = await deleteMessageById(message.id);
       const data = res.data;
 
       if (!data) {
