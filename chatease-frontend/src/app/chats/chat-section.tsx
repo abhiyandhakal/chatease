@@ -212,7 +212,7 @@ export default function ChatSection() {
 
   return (
     <>
-      <div className="h-screen w-full flex flex-col justify-end p-4">
+      <div className="h-[calc(100vh_-_2.5rem)] w-full flex flex-col justify-end p-4">
         <div
           className="h-full w-full rounded-lg overflow-y-scroll p-3 shadow-xl shadow-gray-700"
           ref={chatContainerRef}

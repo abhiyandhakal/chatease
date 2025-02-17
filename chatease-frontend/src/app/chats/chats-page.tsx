@@ -9,6 +9,7 @@ import Sidebar from "./sidebar";
 import twConfig from "tailwindcss/resolveConfig";
 import config from "../../../tailwind.config";
 import ChatSection from "./chat-section";
+import Topbar from "./topbar";
 
 export default function ChatsPage() {
   const twConfigLg = twConfig(config).theme.screens.xl;
@@ -22,6 +23,7 @@ export default function ChatsPage() {
       </ResizablePanel>
       <ResizableHandle withHandle className="w-1" />
       <ResizablePanel>
+        <Topbar />
         <ChatSection />
       </ResizablePanel>
     </ResizablePanelGroup>
