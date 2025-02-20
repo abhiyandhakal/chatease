@@ -120,7 +120,9 @@ export default function ChatSection() {
           chatMessage.chatId === chatSelected?.id
             ? {
                 chatId: chatMessage.chatId,
-                messages: [...chatMessage.messages, data],
+                messages: chatMessage.messages.some((msg) => msg.id === data.id)
+                  ? chatMessage.messages
+                  : [...chatMessage.messages, data],
               }
             : chatMessage,
         ),
