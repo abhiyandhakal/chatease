@@ -4,8 +4,56 @@ import { groups } from "../db/schema/group";
 import { userInGroup } from "../db/schema/relations/user-in-group";
 import { v4 } from "uuid";
 import { error } from "elysia";
+import { users } from "../db/schema/user";
 
 class GroupService {
+  async addGroupMember(id: string, groupId: string, userId: string) {
+    try {
+      const groupArr = await db
+        .select()
+        .from(groups)
+        .where(eq(groups.id, groupId));
+      if (groupArr.length === 0) {
+        return error(404, { success: false, message: "Group not found" });
+      }
+      const group = groupArr[0];
+      if (group.createdBy !== id) {
+        return error(401, {
+          success: false,
+          message: "You are not the owner of this group",
+        });
+      }
+      await db.insert(userInGroup).values({ id: v4(), groupId, userId });
+
+      return { success: true, message: "User added to group" };
+    } catch (e) {
+      return error(500, { success: false, message: "Internal server error" });
+    }
+  }
+  async getGroupMembers(id: string, groupId: string) {
+    try {
+      const groupMembers = await db
+        .select()
+        .from(userInGroup)
+        .innerJoin(users, eq(users.id, userInGroup.userId))
+        .where(eq(userInGroup.groupId, groupId));
+
+      if (!groupMembers.some((groupMember) => groupMember.users.id === id)) {
+        return error(401, {
+          success: false,
+          message: "You are not a member of this group",
+        });
+      }
+
+      return {
+        success: true,
+        data: groupMembers.map((groupMember) => groupMember.users),
+      };
+    } catch (err) {
+      return error(500, { success: false, message: "Internal server error" });
+    }
+  }
+
   async getAllGroups(id: string, offset: number, limit: number) {
     const groupsArr = await db
       .select()

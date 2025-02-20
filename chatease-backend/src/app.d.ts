@@ -14,6 +14,7 @@ type Chat = { id: string } & (
   | {
       type: "group";
       name: string;
+      description: string;
       owner: PublicUser;
       users: PublicUser[];
     }

@@ -57,6 +57,49 @@ const groupRoute = new Elysia({ prefix: "/group" })
       }),
       ...authHeaderValidation,
     },
+  )
+  .get(
+    "/members",
+    async ({ groupService, query: { groupId }, headers }) => {
+      const res = authHeaderValidator(headers);
+      if (res.type === "error") {
+        return res.error;
+      }
+      if (typeof res.user === "string") return error(401);
+      const usersArr = await db
+        .select()
+        .from(users)
+        .where(eq(users.username, res.user.username));
+      return groupService.getGroupMembers(usersArr[0].id, groupId);
+    },
+    {
+      ...authHeaderValidation,
+      query: t.Object({
+        groupId: t.String(),
+      }),
+    },
+  )
+  .post(
+    "/members/add",
+    async ({ groupService, body: { groupId, userId }, headers }) => {
+      const res = authHeaderValidator(headers);
+      if (res.type === "error") {
+        return res.error;
+      }
+      if (typeof res.user === "string") return error(401);
+      const usersArr = await db
+        .select()
+        .from(users)
+        .where(eq(users.username, res.user.username));
+      return groupService.addGroupMember(usersArr[0].id, groupId, userId);
+    },
+    {
+      ...authHeaderValidation,
+      body: t.Object({
+        groupId: t.String(),
+        userId: t.String(),
+      }),
+    },
   );
 
 export default groupRoute;

@@ -88,6 +88,7 @@ class ChatService {
           type: "group",
           id: group.id,
           name: group.name,
+          description: group.description,
           owner: {
             id: group.createdBy,
             username: group.createdBy,
