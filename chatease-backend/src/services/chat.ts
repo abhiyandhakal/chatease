@@ -203,6 +203,7 @@ class ChatService {
                 eq(messages.id, groupHasMessage.messageId),
               )
               .where(eq(groupHasMessage.groupId, channelId))
+              .orderBy(desc(messages.createdAt))
               .limit(limit)
               .offset(offset * limit);
 
