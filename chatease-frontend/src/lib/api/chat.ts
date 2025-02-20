@@ -50,3 +50,11 @@ export function createGroup(name: string, description: string) {
     data: { name, description },
   });
 }
+
+export function addMemberToGroup(groupId: string, userId: string) {
+  return http({
+    url: "group/members/add",
+    method: "post",
+    data: { groupId, userId },
+  });
+}

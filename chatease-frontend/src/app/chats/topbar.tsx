@@ -17,10 +17,11 @@ import {
 } from "@/components/ui/collapsible";
 import { Badge } from "@/components/ui/badge";
 import { useState } from "react";
-import { ChevronDown, CirclePlus } from "lucide-react";
+import { ChevronDown } from "lucide-react";
 import { Avatar } from "@radix-ui/react-avatar";
 import { AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { cn } from "@/lib/utils";
+import AddMember from "@/components/custom/add-member";
 
 export default function Topbar() {
   const chatSelected = useAtomValue(chatSelectedAtom);
@@ -31,7 +32,7 @@ export default function Topbar() {
 
   return (
     <SidebarProvider
-      defaultOpen={false}
+      defaultOpen={true}
       className="w-full"
       style={{ "--sidebar-width": "24rem" } as React.CSSProperties}
     >
@@ -67,10 +68,7 @@ export default function Topbar() {
                   className={`h-4 w-4 transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`}
                 />
               </CollapsibleTrigger>
-              <button className="flex items-center gap-2 px-4 py-2 hover:bg-secondary w-full">
-                <CirclePlus />
-                Add Member
-              </button>
+              {isGroup && <AddMember groupId={chatSelected.id} />}
               <CollapsibleContent className="space-y-2">
                 {groupMembers.map((member) => (
                   <div

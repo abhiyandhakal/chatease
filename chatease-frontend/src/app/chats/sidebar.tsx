@@ -24,7 +24,7 @@ import {
   isChatScrollingAtom,
 } from "@/store/chat";
 import { createDmChannel } from "@/lib/api/chat";
-import AddGroup from "./add-group";
+import AddGroup from "@/components/custom/add-group";
 
 const ChatList = () => {
   const chatList = useAtomValue(chatListAtom);

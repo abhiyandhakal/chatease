@@ -86,6 +86,7 @@ const userRoute = new Elysia({ prefix: "/user" })
       return {
         success: true,
         users: usersArr.map((user) => ({
+          id: user.id,
           username: user.username,
           fullName: user.fullName,
           profilePic: user.profilePic,
