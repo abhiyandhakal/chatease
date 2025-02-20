@@ -129,17 +129,19 @@ const MessageBox: React.FC<MessageBoxProps> = ({ message, type }) => {
       <div className="menu text-muted-foreground hidden">
         <span>{new Date(message.createdAt).toLocaleString()}</span>
       </div>
-      <DropdownMenu>
-        <DropdownMenuTrigger>
-          <Button>Menu</Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent>
-          <DropdownMenuItem onClick={() => setEditing(true)}>
-            Edit
-          </DropdownMenuItem>
-          <DropdownMenuItem onClick={deleteMessage}>Delete</DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
+      {type === "self" && (
+        <DropdownMenu>
+          <DropdownMenuTrigger>
+            <Button>Menu</Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent>
+            <DropdownMenuItem onClick={() => setEditing(true)}>
+              Edit
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={deleteMessage}>Delete</DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      )}
       {editing ? (
         <form onSubmit={editMessage}>
           <input
