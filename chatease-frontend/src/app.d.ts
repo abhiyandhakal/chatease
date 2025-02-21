@@ -26,4 +26,5 @@ type ChatMessage = {
   content: string;
   createdAt: string;
   updatedAt: string | null;
+  status?: "sending" | "failed" | "sent";
 };

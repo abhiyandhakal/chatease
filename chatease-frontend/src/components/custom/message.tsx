@@ -153,7 +153,7 @@ const MessageBox: React.FC<MessageBoxProps> = ({ message, type }) => {
         </form>
       ) : (
         <p
-          className={`w-fit py-2 rounded px-4 text-black ${type === "self" ? "bg-blue-400" : "bg-amber-400"}`}
+          className={`w-fit py-2 rounded px-4 text-black ${type === "self" ? "bg-blue-400" : "bg-amber-400"} ${message?.status === "sending" ? "opacity-45" : ""}`}
         >
           {message.content}
         </p>

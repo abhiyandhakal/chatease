@@ -18,6 +18,7 @@ import {
   useState,
 } from "react";
 import { toast } from "sonner";
+import { v4 } from "uuid";
 
 function Textbox({
   handleSubmit,
@@ -121,7 +122,9 @@ export default function ChatSection() {
             ? {
                 chatId: chatMessage.chatId,
                 messages: chatMessage.messages.some((msg) => msg.id === data.id)
-                  ? chatMessage.messages
+                  ? chatMessage.messages.map((msg) =>
+                      msg.id === data.id ? { ...msg, status: "sent" } : msg,
+                    )
                   : [...chatMessage.messages, data],
               }
             : chatMessage,
@@ -193,10 +196,31 @@ export default function ChatSection() {
       socket.current.readyState === WebSocket.OPEN &&
       input.trim() !== ""
     ) {
+      const newMessage: ChatMessage = {
+        id: v4(),
+        sender: user,
+        content: input,
+        createdAt: new Date().toISOString(),
+        updatedAt: null,
+        status: "sending",
+      };
+      setChatMessages(
+        chatMessages.map((chatMessage) =>
+          chatMessage.chatId === selectedChatMessages?.chatId
+            ? {
+                ...chatMessage,
+                messages: [...chatMessage.messages, newMessage],
+              }
+            : chatMessage,
+        ),
+      );
+
       socket.current.send(
         JSON.stringify({
-          content: input,
-          timestamp: Date.now(),
+          id: newMessage.id,
+          content: newMessage.content,
+          createdAt: newMessage.createdAt,
+          status: newMessage.status,
         }),
       );
       setInput("");
