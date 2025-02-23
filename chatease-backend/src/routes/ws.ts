@@ -23,13 +23,13 @@ const wsRoute = new Elysia({ prefix: "/ws" }).ws("/chat", {
     }
     onlineUsers.get(id)?.add(channelId);
   },
-  async message(ws, { content, timestamp }) {
+  async message(ws, { content, createdAt, id: messageId }) {
     const { id, channelId, type } = ws.data.query;
     const newMessage = {
-      id: v4(),
+      id: messageId,
       content,
       senderId: id,
-      createdAt: new Date(timestamp).toISOString(),
+      createdAt,
       updatedAt: null,
     };
 
@@ -97,7 +97,9 @@ const wsRoute = new Elysia({ prefix: "/ws" }).ws("/chat", {
   }),
   body: t.Object({
     content: t.String(),
-    timestamp: t.Number(),
+    createdAt: t.String(),
+    id: t.String(),
+    status: t.String(),
   }),
 });
 
