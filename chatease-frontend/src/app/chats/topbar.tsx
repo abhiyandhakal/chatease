@@ -18,8 +18,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { useState } from "react";
 import { ChevronDown } from "lucide-react";
-import { Avatar } from "@radix-ui/react-avatar";
-import { AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { cn } from "@/lib/utils";
 import AddMember from "@/components/custom/add-member";
 
@@ -48,12 +47,35 @@ export default function Topbar() {
             <h2 className="font-semibold">Details</h2>
           </SidebarHeader>
           <SidebarContent>
-            <h1 className="font-semibold text-xl text-center p-4">
-              {isGroup ? chatSelected.name : chatSelected?.user.fullName}
-            </h1>
-            <h2 className="text-secondary-foreground text-center px-4">
-              {isGroup ? chatSelected.description : chatSelected?.user.username}
-            </h2>
+            <div className="p-4">
+              {chatSelected?.type === "direct" && (
+                <Avatar className="h-24 w-24 mx-auto">
+                  <AvatarImage
+                    src={
+                      chatSelected.user.profilePic
+                        ? chatSelected.user.profilePic
+                        : undefined
+                    }
+                    alt={chatSelected.user.fullName}
+                  />
+                  <AvatarFallback>
+                    {chatSelected.user.fullName
+                      .toUpperCase()
+                      .split(" ")
+                      .map((n) => n[0])
+                      .join("")}
+                  </AvatarFallback>
+                </Avatar>
+              )}
+              <h1 className="font-semibold text-xl text-center">
+                {isGroup ? chatSelected.name : chatSelected?.user.fullName}
+              </h1>
+              <h2 className="text-secondary-foreground text-center px-4">
+                {isGroup
+                  ? chatSelected.description
+                  : chatSelected?.user.username}
+              </h2>
+            </div>
             <Collapsible
               open={isOpen}
               onOpenChange={setIsOpen}
