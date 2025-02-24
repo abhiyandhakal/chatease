@@ -1,31 +1,36 @@
 "use client";
 
-import {
-  ResizableHandle,
-  ResizablePanel,
-  ResizablePanelGroup,
-} from "@/components/ui/resizable";
-import Sidebar from "./sidebar";
-import twConfig from "tailwindcss/resolveConfig";
-import config from "../../../tailwind.config";
+import ChateaseSidebar from "./sidebar";
 import ChatSection from "./chat-section";
 import Topbar from "./topbar";
+import { Sidebar, SidebarProvider } from "@/components/ui/sidebar";
+import { useState } from "react";
+import { CollapsibleContent, Collapsible } from "@/components/ui/collapsible";
 
 export default function ChatsPage() {
-  const twConfigLg = twConfig(config).theme.screens.xl;
-  const twConfigLgInt = parseInt(twConfigLg.replace("px", ""));
-  const isMobile = window.innerWidth < twConfigLgInt;
+  const [isOpen, setIsOpen] = useState(true);
 
   return (
-    <ResizablePanelGroup direction="horizontal">
-      <ResizablePanel defaultSize={!isMobile ? 20 : undefined}>
-        <Sidebar />
-      </ResizablePanel>
-      <ResizableHandle withHandle className="w-1" />
-      <ResizablePanel>
+    <SidebarProvider
+      defaultOpen={true}
+      className="w-full"
+      style={{ "--sidebar-width": "24rem" } as React.CSSProperties}
+    >
+      <Sidebar side="left" className="border-r h-full">
+        <Collapsible
+          open={isOpen}
+          onOpenChange={setIsOpen}
+          className="space-y-2 h-full"
+        >
+          <CollapsibleContent className="space-y-2 h-full">
+            <ChateaseSidebar />
+          </CollapsibleContent>
+        </Collapsible>
+      </Sidebar>
+      <div className="w-full h-screen overflow-y-hidden">
         <Topbar />
         <ChatSection />
-      </ResizablePanel>
-    </ResizablePanelGroup>
+      </div>
+    </SidebarProvider>
   );
 }
