@@ -14,7 +14,7 @@ export default function ChatsPage() {
     <SidebarProvider
       defaultOpen={true}
       className="w-full"
-      style={{ "--sidebar-width": "24rem" } as React.CSSProperties}
+      style={{ "--sidebar-width": "20rem" } as React.CSSProperties}
     >
       <Sidebar side="left" className="border-r h-full">
         <Collapsible

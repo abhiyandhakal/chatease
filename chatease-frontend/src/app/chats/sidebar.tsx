@@ -2,7 +2,6 @@
 import { Button } from "@/components/ui/button";
 import { userAtom } from "@/store/profile";
 import { useAtom, useAtomValue, useSetAtom } from "jotai";
-import Image from "next/image";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -25,6 +24,7 @@ import {
 } from "@/store/chat";
 import { createDmChannel } from "@/lib/api/chat";
 import AddGroup from "@/components/custom/add-group";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 const ChatList = () => {
   const chatList = useAtomValue(chatListAtom);
@@ -40,29 +40,43 @@ const ChatList = () => {
           <>
             <button
               key={chat.id}
-              className={`flex items-center gap-4 ${chatSelected?.id === chat.id ? "bg-secondary hover:opacity-85" : "hover:bg-secondary"} p-4 w-full`}
+              className={`flex items-center gap-4 ${chatSelected?.id === chat.id ? "bg-secondary hover:opacity-85" : "hover:bg-secondary"} p-2 w-full`}
               onClick={() => {
                 setChatSelected(chat);
                 setIsScrolling(true);
               }}
             >
-              {chat.type === "direct" ? (
-                <div className="h-14 w-14 relative">
-                  <Image
-                    src={chat.user.profilePic || "/default-profile.webp"}
-                    alt={chat.user.username}
-                    height={80}
-                    width={80}
-                    className="rounded-full h-full w-full object-cover"
+              {/* {chat.type === "direct" ? ( */}
+              <div className="h-14 w-14 relative">
+                <Avatar className="h-14 w-14">
+                  <AvatarImage
+                    src={
+                      chat.type === "direct" ? chat.user.profilePic || "" : ""
+                    }
+                    alt={
+                      chat.type === "direct" ? chat.user.fullName : chat.name
+                    }
+                    height={56}
+                    width={56}
                   />
-                  {/* active status indicator */}
+                  <AvatarFallback>
+                    {(chat.type === "direct" ? chat.user.fullName : chat.name)
+                      .toUpperCase()
+                      .split(" ")
+                      .map((n) => n[0])
+                      .join("")}
+                  </AvatarFallback>
+                </Avatar>
+                {/* active status indicator */}
+                {chat.type === "direct" && (
                   <span
                     className={`h-4 w-4 absolute rounded-full bottom-0.5 right-0.5 ${chat.user.is_online ? "bg-online" : "bg-offline border-2 border-gray-500"}`}
                   ></span>
-                </div>
-              ) : null}
+                )}
+              </div>
+              {/* ) : null} */}
               <div className="flex flex-col justify-center items-start">
-                <span className="font-semibold text-xl">
+                <span className="font-semibold text-lg">
                   {chat.type === "direct" ? chat.user.fullName : chat.name}
                 </span>
                 {chat.type === "direct" ? (
@@ -177,15 +191,17 @@ export default function Sidebar() {
         </div>
         <div className="flex w-full items-center p-2 gap-4">
           <div className="flex items-center gap-4 hover:bg-secondary rounded-lg p-4 w-full">
-            <Image
-              src={user.profilePic || "/default-profile.webp"}
-              height={80}
-              width={80}
-              alt={user.fullName}
-              className="rounded-full h-20 w-20 object-cover"
-            />
+            <Avatar className="h-14 w-14">
+              <AvatarImage src={user.profilePic || ""} alt={user.fullName} />
+              <AvatarFallback>
+                {user.fullName
+                  .split(" ")
+                  .map((n) => n[0])
+                  .join("")}
+              </AvatarFallback>
+            </Avatar>
             <div>
-              <p className="font-semibold text-2xl">{user.fullName}</p>
+              <p className="font-semibold text-xl">{user.fullName}</p>
               <p className="text-secondary-foreground">@{user.username}</p>
             </div>
           </div>
