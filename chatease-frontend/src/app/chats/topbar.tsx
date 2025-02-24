@@ -59,16 +59,20 @@ export default function Topbar() {
               onOpenChange={setIsOpen}
               className="space-y-2"
             >
-              <CollapsibleTrigger className="flex w-full items-center justify-between rounded-lg border px-4 py-3 font-medium transition-colors hover:bg-muted">
-                <div className="flex items-center gap-2">
-                  <span>Team Members</span>
-                  <Badge variant="secondary">{groupMembers.length}</Badge>
-                </div>
-                <ChevronDown
-                  className={`h-4 w-4 transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`}
-                />
-              </CollapsibleTrigger>
-              {isGroup && <AddMember groupId={chatSelected.id} />}
+              {isGroup && (
+                <>
+                  <CollapsibleTrigger className="flex w-full items-center justify-between rounded-lg border px-4 py-3 font-medium transition-colors hover:bg-muted">
+                    <div className="flex items-center gap-2">
+                      <span>Team Members</span>
+                      <Badge variant="secondary">{groupMembers.length}</Badge>
+                    </div>
+                    <ChevronDown
+                      className={`h-4 w-4 transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`}
+                    />
+                  </CollapsibleTrigger>
+                  <AddMember groupId={chatSelected.id} />
+                </>
+              )}
               <CollapsibleContent className="space-y-2">
                 {groupMembers.map((member) => (
                   <div
