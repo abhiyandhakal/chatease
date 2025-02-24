@@ -10,6 +10,11 @@ import { deleteMessageById, editMessageById } from "@/lib/api/chat";
 import { useState } from "react";
 import { useAtom } from "jotai";
 import { chatMessagesAtom } from "@/store/chat";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 interface MessageBoxProps {
   type: "self" | "other";
@@ -113,22 +118,7 @@ const MessageBox: React.FC<MessageBoxProps> = ({ message, type }) => {
   return (
     <div
       className={`w-full flex mt-1 items-center gap-2 ${type === "self" ? "justify-end" : ""}`}
-      onMouseEnter={(e) => {
-        const menu = e.currentTarget.querySelector(".menu");
-        if (menu) {
-          menu.classList.remove("hidden");
-        }
-      }}
-      onMouseLeave={(e) => {
-        const menu = e.currentTarget.querySelector(".menu");
-        if (menu) {
-          menu.classList.add("hidden");
-        }
-      }}
     >
-      <div className="menu text-muted-foreground hidden">
-        <span>{new Date(message.createdAt).toLocaleString()}</span>
-      </div>
       {type === "self" && (
         <DropdownMenu>
           <DropdownMenuTrigger>
@@ -152,11 +142,16 @@ const MessageBox: React.FC<MessageBoxProps> = ({ message, type }) => {
           <Button type="submit">Save</Button>
         </form>
       ) : (
-        <p
-          className={`w-fit py-2 rounded px-4 text-black ${type === "self" ? "bg-blue-400" : "bg-amber-400"} ${message?.status === "sending" ? "opacity-45" : ""}`}
-        >
-          {message.content}
-        </p>
+        <Tooltip>
+          <TooltipTrigger
+            className={`w-fit py-2 rounded px-4 text-black ${type === "self" ? "bg-blue-400" : "bg-amber-400"} ${message?.status === "sending" ? "opacity-45" : ""}`}
+          >
+            {message.content}
+          </TooltipTrigger>
+          <TooltipContent side="bottom">
+            {new Date(message.createdAt).toLocaleString()}
+          </TooltipContent>
+        </Tooltip>
       )}
     </div>
   );
