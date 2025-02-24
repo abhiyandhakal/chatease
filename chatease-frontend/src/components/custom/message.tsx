@@ -15,6 +15,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 interface MessageBoxProps {
   type: "self" | "other";
@@ -142,16 +143,40 @@ const MessageBox: React.FC<MessageBoxProps> = ({ message, type }) => {
           <Button type="submit">Save</Button>
         </form>
       ) : (
-        <Tooltip>
-          <TooltipTrigger
-            className={`w-fit py-2 rounded px-4 text-black ${type === "self" ? "bg-blue-400" : "bg-amber-400"} ${message?.status === "sending" ? "opacity-45" : ""}`}
-          >
-            {message.content}
-          </TooltipTrigger>
-          <TooltipContent side="bottom">
-            {new Date(message.createdAt).toLocaleString()}
-          </TooltipContent>
-        </Tooltip>
+        <>
+          {type === "self" || (
+            <Tooltip>
+              <TooltipTrigger>
+                <Avatar>
+                  <AvatarImage
+                    src={message.sender.profilePic || ""}
+                    alt={message.sender.fullName}
+                  />
+                  <AvatarFallback>
+                    {message.sender.fullName
+                      .toUpperCase()
+                      .split(" ")
+                      .map((n) => n[0])
+                      .join("")}
+                  </AvatarFallback>
+                </Avatar>
+              </TooltipTrigger>
+              <TooltipContent side="right">
+                {message.sender.fullName}
+              </TooltipContent>
+            </Tooltip>
+          )}
+          <Tooltip>
+            <TooltipTrigger
+              className={`w-fit py-2 select-all rounded px-4 text-black ${type === "self" ? "bg-blue-400" : "bg-amber-400"} ${message?.status === "sending" ? "opacity-45" : ""}`}
+            >
+              {message.content}
+            </TooltipTrigger>
+            <TooltipContent side="bottom">
+              {new Date(message.createdAt).toLocaleString()}
+            </TooltipContent>
+          </Tooltip>
+        </>
       )}
     </div>
   );
