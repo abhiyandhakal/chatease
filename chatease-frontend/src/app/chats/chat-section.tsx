@@ -1,4 +1,5 @@
 import MessageBox from "@/components/custom/message";
+import Textbox from "@/components/custom/textbox";
 import { getChatMessagesByChatId } from "@/lib/api/chat";
 import {
   chatMessagesAtom,
@@ -9,46 +10,9 @@ import { userAtom } from "@/store/profile";
 import { AxiosError } from "axios";
 import { useAtom, useAtomValue } from "jotai";
 import { useRouter } from "next/navigation";
-import {
-  Dispatch,
-  FormEventHandler,
-  SetStateAction,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import { FormEventHandler, useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { v4 } from "uuid";
-
-function Textbox({
-  handleSubmit,
-  input,
-  setInput,
-}: {
-  handleSubmit: FormEventHandler<HTMLFormElement>;
-  input: string;
-  setInput: Dispatch<SetStateAction<string>>;
-}) {
-  return (
-    <form className="w-full mt-2 flex gap-2" onSubmit={handleSubmit}>
-      <input
-        type="text"
-        name="text"
-        className="bg-slate-400 text-black p-2 rounded w-full"
-        value={input}
-        onChange={(e) => setInput(e.target.value)}
-        autoCorrect="off"
-        autoComplete="off"
-      />
-      <button
-        type="submit"
-        className="text-black bg-cyan-400 w-fit px-4 rounded"
-      >
-        Enter
-      </button>
-    </form>
-  );
-}
 
 export default function ChatSection() {
   const chatSelected = useAtomValue(chatSelectedAtom);
@@ -189,8 +153,7 @@ export default function ChatSection() {
     return () => chatContainer?.removeEventListener("scroll", handleScroll);
   });
 
-  const handleTextSubmit: FormEventHandler<HTMLFormElement> = (e) => {
-    e.preventDefault();
+  const handleTextSubmit = () => {
     if (
       socket.current &&
       socket.current.readyState === WebSocket.OPEN &&
